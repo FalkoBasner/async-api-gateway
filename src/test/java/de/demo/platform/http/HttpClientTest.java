@@ -3,7 +3,6 @@ package de.demo.platform.http;
 import lombok.SneakyThrows;
 import org.asynchttpclient.Response;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 import java.util.concurrent.ExecutionException;
 

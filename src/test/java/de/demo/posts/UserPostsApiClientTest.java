@@ -16,8 +16,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.IntStream;
 
 import static java.lang.String.format;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
@@ -54,6 +53,6 @@ public class UserPostsApiClientTest {
         final List<JSONObject> posts = new LinkedList<>();
         IntStream.range(0, postsJson.size()).forEach(ii -> posts.add((JSONObject) postsJson.get(ii)));
 
-        posts.stream().forEach(p -> assertThat(p.get("userId"), is(USER_ID_VALUE)));
+        posts.stream().forEach(p -> assertThat(p.get("userId")).isEqualTo(USER_ID_VALUE));
     }
 }

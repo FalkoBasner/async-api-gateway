@@ -15,9 +15,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,21 +40,21 @@ public class UserWithPostsServiceTest {
 
         final CompletableFuture<JSONObject> combinedFuture = service.getUserWithPosts(USER_ID);
 
-        userFuture.complete(createUserJSONObject());
-        userPostsFuture.complete(createUserPostsJSONArray());
+        userFuture.complete(expectedUserJson());
+        userPostsFuture.complete(expectedPostsJson());
 
         final JSONObject json = combinedFuture.get();
 
-        assertThat((Set<String>) json.keySet(), containsInAnyOrder("user", "posts"));
-        assertThat(json.get("user"), is(createUserJSONObject()));
-        assertThat(json.get("posts"), is(createUserPostsJSONArray()));
+        assertThat((Set<String>) json.keySet()).containsExactlyInAnyOrder("user", "posts");
+        assertThat(json.get("user")).isEqualTo((expectedUserJson()));
+        assertThat(json.get("posts")).isEqualTo((expectedPostsJson()));
     }
 
-    private JSONObject createUserJSONObject() {
+    private JSONObject expectedUserJson() {
         return new JSONObject(ImmutableMap.of("user_key", "user_value"));
     }
 
-    private JSONArray createUserPostsJSONArray() {
+    private JSONArray expectedPostsJson() {
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(new JSONObject(ImmutableMap.of("post_key", "post_value")));
         return jsonArray;

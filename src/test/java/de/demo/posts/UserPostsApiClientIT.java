@@ -12,8 +12,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class UserPostsApiClientIT {
@@ -27,7 +26,7 @@ public class UserPostsApiClientIT {
     @Test
     public void getUserPostsJson() throws ExecutionException, InterruptedException {
         final Future<JSONArray> jsonFuture = apiClient.getUserPosts(USER_ID);
-        assertThat(jsonFuture.isDone(), is(false));
+        assertThat(jsonFuture.isDone()).isFalse();
 
         final List<JSONObject> posts = new LinkedList<>();
 
@@ -35,14 +34,14 @@ public class UserPostsApiClientIT {
 
         IntStream.range(0, postsJson.size()).forEach(ii -> posts.add((JSONObject) postsJson.get(ii)));
 
-        posts.forEach(p -> assertThat(p.get(JSON_KEY_USER_ID), is(USER_ID)));
+        posts.forEach(p -> assertThat(p.get(JSON_KEY_USER_ID)).isEqualTo(USER_ID));
     }
 
     @Test
     public void getUserPostsJson_With_Unknown_Id() throws ExecutionException, InterruptedException {
         final Future<JSONArray> jsonFuture = apiClient.getUserPosts(UNKNOWN_USER_ID);
-        assertThat(jsonFuture.isDone(), is(false));
+        assertThat(jsonFuture.isDone()).isFalse();
 
-        assertThat(jsonFuture.get().isEmpty(), is(true));
+        assertThat(jsonFuture.get()).isEmpty();
     }
 }
