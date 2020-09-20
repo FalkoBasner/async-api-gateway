@@ -1,4 +1,4 @@
-package de.demo.platform.http;
+package de.demo.platform.http.error;
 
 import de.demo.platform.error.AppException;
 

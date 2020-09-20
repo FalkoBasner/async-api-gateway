@@ -1,37 +1,31 @@
 package de.demo.platform.http;
 
+import de.demo.platform.http.error.HttpClientException;
 import lombok.SneakyThrows;
-import org.asynchttpclient.Response;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-
-import java.util.concurrent.ExecutionException;
+import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.http.HttpStatus.OK;
 
-class HttpClientTest {
+class RestTemplateHttpClientTest {
     public static final long USER_ID = 1L;
     public static final String URL = "http://jsonplaceholder.typicode.com/users/" + USER_ID;
     public static final String URL_WITH_INVALID_HOST = "http://UPS.jsonplaceholder.typicode.com/users/" + USER_ID;
 
-    private HttpClient client = new HttpClient();
+    private RestTemplateHttpClient client = new RestTemplateHttpClient();
 
     @Test
     @SneakyThrows
     public void get() {
-        final Response resp = client.get(URL).get();
-        assertThat(resp.getStatusCode()).isEqualTo(OK.value());
+        final ResponseEntity<String> resp = client.get(URL);
+        assertThat(resp.getStatusCode()).isEqualTo(OK);
     }
 
     @Test
-    @SneakyThrows
     public void get_With_unknown_host() {
-        try {
-            client.get(URL_WITH_INVALID_HOST).get();
-        } catch (ExecutionException e) {
-            assertThat(e.getCause()).isInstanceOf(HttpClientException.class);
-        }
+        assertThrows(HttpClientException.class, () -> client.get(URL_WITH_INVALID_HOST));
     }
 
 }

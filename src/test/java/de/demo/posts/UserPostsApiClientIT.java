@@ -1,5 +1,6 @@
 package de.demo.posts;
 
+import lombok.SneakyThrows;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -8,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 
@@ -25,7 +26,8 @@ public class UserPostsApiClientIT {
     public UserPostsApiClient apiClient;
 
     @Test
-    public void getUserPostsJson() throws ExecutionException, InterruptedException {
+    @SneakyThrows
+    public void getUserPostsJson() {
         final Future<JSONArray> jsonFuture = apiClient.getUserPosts(USER_ID);
         assertThat(jsonFuture.isDone(), is(false));
 
@@ -39,8 +41,9 @@ public class UserPostsApiClientIT {
     }
 
     @Test
-    public void getUserPostsJson_With_Unknown_Id() throws ExecutionException, InterruptedException {
-        final Future<JSONArray> jsonFuture = apiClient.getUserPosts(UNKNOWN_USER_ID);
+    @SneakyThrows
+    public void getUserPostsJson_With_Unknown_Id() {
+        final CompletableFuture<JSONArray> jsonFuture = apiClient.getUserPosts(UNKNOWN_USER_ID);
         assertThat(jsonFuture.isDone(), is(false));
 
         assertThat(jsonFuture.get().isEmpty(), is(true));
