@@ -1,31 +1,31 @@
 package de.demo.userwithposts;
 
-import de.demo.posts.UserPostsApiClient;
-import de.demo.user.UserApiClient;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import de.demo.typicode.TypicodeApiClient;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.CompletableFuture;
+import reactor.core.publisher.Mono;
 
 @AllArgsConstructor
 @Slf4j
 @Component
 public class UserWithPostsService {
-    private final UserApiClient userApiClient;
-    private final UserPostsApiClient userPostsApiClient;
+    private ObjectMapper mapper;
 
-    static JSONObject combine(final JSONObject user, final JSONArray posts) {
-        final JSONObject combined = new JSONObject();
-        combined.put("user", user);
-        combined.put("posts", posts);
-        return combined;
+    private TypicodeApiClient typicodeApiClient;
+
+    public Mono<JsonNode> getUserWithPosts(final long userId) {
+        return typicodeApiClient.getUser(userId)
+                .zipWith(typicodeApiClient.getUserPosts(userId), this::combine);
     }
 
-    public CompletableFuture<JSONObject> getUserWithPosts(final long userId) {
-        return userApiClient.getUser(userId)
-                .thenCombine(userPostsApiClient.getUserPosts(userId), UserWithPostsService::combine);
+    JsonNode combine(final JsonNode user, final JsonNode posts) {
+        final ObjectNode combined = mapper.createObjectNode();
+        combined.set("user", user);
+        combined.set("posts", posts);
+        return combined;
     }
 }

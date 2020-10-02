@@ -1,7 +1,6 @@
-user:
+typicode:
   api:
-    url: http://jsonplaceholder.typicode.com/users
-
-posts:
-  api:
-    url: http://jsonplaceholder.typicode.com/posts
+    users:
+      url: http://jsonplaceholder.typicode.com/users
+    posts:
+      url: http://jsonplaceholder.typicode.com/posts
